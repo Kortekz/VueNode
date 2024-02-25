@@ -1,44 +1,51 @@
 <template>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-transparent">
+    <router-link to="/" class="navbar-brand">
+      <span class="logo">Kittleys</span>
+    </router-link>
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-transparent">
-      <a class="navbar-brand" href="../views/HomeView.vue">
-        <span class="logo">Kittleys</span>
-      </a>
-  
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-toggle="collapse"
+      data-target="#navbarNav"
+      aria-controls="navbarNav"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav mx-auto">
+        <li class="nav-item">
+          <router-link to="/" class="nav-link">Home</router-link>
+        </li>
+        <li class="nav-item">
+          <router-link to="/about" class="nav-link">About</router-link>
+        </li>
+        <li class="nav-item">
+          <router-link to="/about" class="nav-link">Products</router-link>
+        </li>
+        <li class="nav-item">
+          <router-link to="/about" class="nav-link">Admin</router-link>
+        </li>
+        
+      </ul>
+
+      <!-- CONTACT US button  -->
+      <button class="btn btn-primary ml-auto">
+        Contact Us
       </button>
-  
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav mx-auto">
-          <li class="nav-item active">
-            <a class="nav-link" href="../views/HomeView.vue">Home </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="../views/AboutView.vue">About</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="../views/ProductsView.vue">Products</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="../views/AdminView.vue">Admin</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="../views/ContactView.vue">Contact</a>
-          </li>
-        </ul>
-  
-        <!-- CONTACT US button  -->
-        <button class="btn btn-primary ml-auto">Contact Us</button>
-      </div>
-    </nav>
-  </template>
-  
-  <script>
-  export default {
-   
-  }
-  </script>
+
+    </div>
+  </nav>
+</template>
+
+<script>
+export default {
+}
+</script>
   
   <style scoped>
 
@@ -88,6 +95,10 @@
     color: rgb(0, 0, 0);
   }
   
+  li{
+    font-weight: 500;
+    font-size: 18px;
+  }
   
   </style>
   
