@@ -45,14 +45,14 @@ export default {
 
 h3 {
   color: #4FB860;
-  font-size: 22px;
+  font-size: 25px;
   font-weight: 400;
-  padding-bottom: 20px;
+  padding-bottom: 40px;
 }
 
 h1 {
   color: black;
-  font-weight: 700;
+  font-weight: 600;
   font-size: 50px;
 }
 
@@ -90,7 +90,7 @@ button {
 }
 
 .img {
-  margin-left: 300px;
+  margin-left: 280px;
   padding-top: 20px;
 }
 </style>
