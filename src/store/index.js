@@ -1,72 +1,55 @@
-import { createStore } from 'vuex'
-import router from '@/router'
-import axios from 'axios'
+// store/index.js
+import { createStore } from 'vuex';
+import axios from 'axios';
 
-const baseURL = 'https://node-eomp-a-c.onrender.com'
+const baseURL = 'https://node-eomp-a-c.onrender.com';
 
 export default createStore({
   state: {
-    users: [] // This adds a state property to store users
+    products: [] // Corrected the state property name to products
   },
   getters: {
-    getUsers: state => state.users // This adds a getter to retrieve users
+    getProducts: state => state.products
   },
   mutations: {
-    setUsers(state, users) {
-      state.users = users; // Mutation to update users in the state
+    setProducts(state, products) {
+      state.products = products;
     }
   },
   actions: {
-    // Get all users (GET)
-    async getUsers({ commit }) {
+    async getProducts({ commit }) {
       try {
-        let { data } = await axios.get(baseURL + '/users')
-        commit('setUsers', data)
+        let { data } = await axios.get(baseURL + '/products');
+        commit('setProducts', data.results);
       } catch (error) {
-        console.error('Error getting users:', error)
+        console.error('Error getting products:', error);
       }
     },
-    // Get specific user by ID (GET)
-    async getUserById({ commit }, id) {
+    async deleteProduct({ dispatch }, id) {
       try {
-        let { data } = await axios.get(baseURL + `/${id}`)
-        // Handles the data
+        await axios.delete(baseURL + '/products/' + id);
+        dispatch('getProducts');
       } catch (error) {
-        console.error('Error getting user by ID:', error)
+        console.error('Error deleting Product:', error);
       }
     },
-    // Register a user (POST)
-    async registerUser({ dispatch }, newUser) {
+    async updateProduct({ dispatch }, update) {
       try {
-        const response = await axios.post(baseURL + '/register', newUser)
-        console.log(response.data)
-        // To update users after posting, I use dispatch getUsers
-        dispatch('getUsers')
+        await axios.patch(baseURL + '/products/' + update.prodID + '/updateProduct', update);
+        dispatch('getProducts');
       } catch (error) {
-        console.error('Error registering User:', error)
+        console.error('Error updating Product:', error);
       }
     },
-    // Delete a user (DELETE)
-    async deleteUser({ commit }, id) {
-      try {
-        await axios.delete(baseURL + '/users/' + id)
-        // If you need to update users after deletion, you can dispatch getUsers
-        commit('setUsers', []) // Reset users after deletion
-        dispatch('getUsers')
-      } catch (error) {
-        console.error('Error deleting User:', error)
-      }
-    },
-    // Update a user (PATCH)
-    async updateUser({ commit }, update) {
-      try {
-        await axios.patch(baseURL + '/users/' + update.id, update)
-        // To update users after patching, I use dispatch getUsers
-        dispatch('getUsers')
-      } catch (error) {
-        console.error('Error updating User:', error)
-      }
-    },
-  },
+    // Register a new product (POST)
+  async registerProduct({ dispatch }, newProduct) {
+    try {
+      await axios.post(baseURL + '/addProduct', newProduct);
+      dispatch('getProducts');
+    } catch (error) {
+      console.error('Error adding Product:', error);
+    }
+  }
+},
   modules: {}
-})
+});
