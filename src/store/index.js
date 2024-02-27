@@ -6,10 +6,10 @@ const baseURL = 'https://node-eomp-a-c.onrender.com';
 
 export default createStore({
   state: {
-    products: [] // Corrected the state property name to products
+    products: []
   },
   getters: {
-    getProducts: state => state.products
+
   },
   mutations: {
     setProducts(state, products) {
@@ -25,31 +25,32 @@ export default createStore({
         console.error('Error getting products:', error);
       }
     },
-    async deleteProduct({ dispatch }, id) {
+    async deleteProduct({ commit }, id) {
       try {
-        await axios.delete(baseURL + '/products/' + id);
-        dispatch('getProducts');
+        await axios.delete(baseURL  + '/products/' + id + '/deleteProduct');
       } catch (error) {
         console.error('Error deleting Product:', error);
       }
+      window.location.reload()
     },
-    async updateProduct({ dispatch }, update) {
+    async updateProduct({ commit }, update) {
       try {
         await axios.patch(baseURL + '/products/' + update.prodID + '/updateProduct', update);
-        dispatch('getProducts');
+        commit('getProducts');
       } catch (error) {
         console.error('Error updating Product:', error);
       }
+      window.location.reload()
     },
-    // Register a new product (POST)
-  async registerProduct({ dispatch }, newProduct) {
-    try {
-      await axios.post(baseURL + '/addProduct', newProduct);
-      dispatch('getProducts');
-    } catch (error) {
-      console.error('Error adding Product:', error);
-    }
-  }
-},
+    async registerProduct({ commit }, newProduct) {
+      try {
+        let {data} = await axios.post(baseURL + '/products/addProduct', newProduct);
+        commit('setProducts', data);
+      } catch (error) {
+        console.error('Error adding Product:', error);
+      }
+      window.location.reload()
+    },
+  },
   modules: {}
 });

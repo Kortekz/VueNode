@@ -1,183 +1,192 @@
-<!-- src/views/Admin.vue -->
 <template>
-    <div class="admin">
-      <!-- Edit Form -->
-      <form @submit.prevent="submitEditForm">
-        <label>
-          Product ID:
-          <input v-model="editForm.prodID" type="text" required />
-        </label>
-        <label>
-          Product Name:
-          <input v-model="editForm.prodName" type="text" required />
-        </label>
-        <label>
-          Product Quantity:
-          <input v-model="editForm.prodQuantity" type="text" required />
-        </label>
-        <label>
-          Product Amount:
-          <input v-model="editForm.prodAmount" type="text" required />
-        </label>
-  
-        <button type="submit" class="btn btn-primary" :disabled="!editForm.prodName || !editForm.prodQuantity || !editForm.prodAmount">Add Product</button>
-  
-        <button type="button" class="btn btn-primary" :disabled="!editForm.prodID" @click="updateProduct">Update Product</button>
-      </form>
-  
-      <!-- Product Table -->
-      <table class="table table-transparent">
-        <thead>
-          <tr>
-            <th> ID </th>
-            <th> Image </th>
-            <th> Name </th>
-            <th> Quantity </th>
-            <th> Amount </th>
-            <th> Actions </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="item in $store.state.products" :key="item.prodID">
-            <td>{{ item.prodID }}</td>
-            <td><img :src="item.prodImg" alt="Product Image" class="table-image"></td>
-            <td>{{ item.prodName }}</td>
-            <td>{{ item.prodQuantity }}</td>
-            <td>{{ item.prodAmount }}</td>
-            <td>
-              <button class="btn btn-danger" @click="deleteProduct(item.prodName)">Delete</button>
-              <!-- <button class="btn btn-warning" @click="setEditForm(item)">Edit</button> -->
-            </td>
-          </tr>
-        </tbody>
-      </table>
+
+<h1>Admin</h1>
+
+
+  <div class="admin">
+    <!-- Edit inputs -->
+    <div class="inputM">
+
+        <input class="info" v-model="prodID" type="text" placeholder="Product ID:"/>
+        <input class="info" v-model="prodName" type="text" placeholder="Product Name:"/>
+        <input class="info" v-model="prodQuantity" type="text" placeholder="Product Quantity:"/>
+        <input class="info" v-model="prodAmount" type="text" placeholder="Product Amount:"/>
+        <input class="info" v-model="prodImg" type="text" placeholder="Product Image URL:"/>
+
+        <p class="cat">Category:</p>
+        <select v-model="prodCategory">
+          <option value="Vegan">Vegan</option>
+          <option value="Non-Vegan">Non-Vegan</option>
+        </select>
+        <br>
+      <button type="button" class="btn btn-primary" @click="registerProduct">Add Product</button>
+
     </div>
-  </template>
-  
-  <script>
-  export default {
-    data() {
-      return {
-        editForm: {
-          prodID: '',
-          prodName: '',
-          prodQuantity: '',
-          prodAmount: '',
-        },
-      };
+        
+    <!-- Product Table -->
+    <table class="table table-bordered">
+      <thead >
+        <tr>
+          <th>ID</th>
+          <th>Image</th>
+          <th>Name</th>
+          <th>Category</th>
+          <th>Quantity</th>
+          <th>Amount</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="item in getProducts" :key="item.prodID">
+          <td>{{ item.prodID }}</td>
+          <td><img :src="item.prodImg" alt="Product Image" ></td>
+          <td>{{ item.prodName }}</td>
+          <td>{{ item.prodCategory }}</td>
+          <td>{{ item.prodQuantity }}</td>
+          <td>{{ item.prodAmount }}</td>
+          <td>
+            <button class="btn1" @click="deleteProduct(item.prodID)">Delete</button>
+            <button class="btn2" @click="updateProduct(item.prodID)">Edit</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+     prodID: '',
+     prodName: '',
+     prodImg: '',
+     prodCategory: '',
+     prodQuantity: '',
+     prodAmount: ''
+    };
+  },
+  computed: {
+    getProducts() {
+    return this.$store.state.products;
+  },
+    registerProduct(){
+      this.$store.dispatch('registerProduct', this.$data)
     },
-    mounted() {
-      this.$store.dispatch('getProducts');
-    },
-    methods: {
-      submitEditForm() {
-        if (this.editForm.prodID) {
-          this.updateProduct();
-        } else {
-          this.$store.dispatch('registerProduct', this.editForm)
-            .then(() => {
-              this.editForm = {
-                prodID: '',
-                prodName: '',
-                prodQuantity: '',
-                prodAmount: '',
-              };
-            })
-            .catch((error) => {
-              console.error('Error adding Product:', error);
-            });
-        }
-      },
-      updateProduct() {
-        this.$store.dispatch('registerProduct', this.editForm)
-          .then(() => {
-            this.editForm = {
-              prodID: '',
-              prodName: '',
-              prodQuantity: '',
-              prodAmount: '',
-            };
-          })
-          .catch((error) => {
-            console.error('Error updating Product:', error);
-          });
-      },
-      setEditForm(item) {
-        this.editForm = {
-          prodID: item.prodID,
-          prodName: item.prodName,
-          prodQuantity: item.prodQuantity,
-          prodAmount: item.prodAmount,
-        };
-      },
-      deleteProduct(id) {
-        this.$store.dispatch('deleteProduct', id);
-      },
-    },
-  };
-  </script>
-  
-  <style scoped>
-  .admin {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding-top: 50px;
-  }
-  table {
-    width: 60%;
-  }
-  .table-transparent {
-    background: transparent !important;
-    color: white;
-    border: none;
-    margin: 40px;
-  }
-  .table th,
-  .table td {
-    border: 2px solid black;
-  }
-  .table-image {
-    max-width: 100px;
-    max-height: 100px;
-  }
-  .btn-danger {
-    background-color: #FF4D4D;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 5px 10px;
-    cursor: pointer;
-  }
-  .btn-warning {
-    background-color: #FFD166;
-    color: black;
-    border: none;
-    border-radius: 5px;
-    padding: 5px 10px;
-    cursor: pointer;
-  }
-  form {
-    margin-bottom: 20px;
-    margin-left: 40px;
-  }
-  form label {
-    display: block;
-    margin-bottom: 10px;
-  }
-  form input {
-    width: 100%;
-    padding: 5px;
-    margin-bottom: 10px;
-  }
-  .btn-primary {
-    background-color: #007BFF;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 5px 10px;
-    cursor: pointer;
-    margin: 15px;
-  }
-  </style>
-  
+    
+  },
+  mounted() {
+    this.$store.dispatch('getProducts');
+  },
+  methods: {
+    deleteProduct(prodID){
+      this.$store.dispatch('deleteProduct', prodID)
+    }
+}
+};
+</script>
+
+<style scoped>
+h1{
+  text-align: center;
+  padding-bottom: 50px;
+  padding-top: 50px;
+  color: black;
+}
+.admin {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.cat{
+  font-size: 20px;
+  margin-bottom: 5px;
+  color: black;
+}
+.table {
+  background: transparent !important;
+  width: 85%;
+  margin-bottom: 50px;
+}
+th{
+  font-size: 18px;
+  /* font-family: 'Poppins', sans-serif; */
+  padding: 10px;
+}
+
+img {
+  height: 80px;
+  width: 100px;
+}
+
+input {
+  width: 30%;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 15px;
+  border: 2px solid black;
+  margin: 15px;
+  background-color: transparent;
+  transition: 0.5s;
+}
+input:hover{
+  background-color: white;
+  transform: scale(1.05);
+  transition: 0.5s;
+}
+::placeholder{
+  color: black;
+}
+select{
+  width: 30%;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 15px;
+  border: 2px solid black;
+  background-color: transparent;
+}
+select:hover{
+  background-color: white;
+  transition: 0.5s;
+  transform: scale(1.05);
+}
+.btn-primary {
+  background-color: #87EF97;
+  color: black;
+  border: none;
+  border-radius: 5px;
+  padding: 15px 15px;
+  cursor: pointer;
+  margin: 15px;
+  /* margin-top: 150px; */
+  font-size: 20px;
+  margin-bottom: 50px;
+  transition: 0.5s;
+}
+.btn-primary:hover{
+  transition: 0.5s;
+  transform: scale(1.1);
+  /* border: 2px solid black ; */
+  color: black;
+  background-color: #87EF97;
+}
+.btn1{
+  border: none;
+  background-color: red;
+  color: white;
+  font-size: 18px;
+  border-radius: 10px;
+  padding: 8px;
+  margin: 8px;
+}
+.btn2{
+  border: none;
+  background-color: rgb(20, 74, 211);
+  color: white;
+  font-size: 18px;
+  border-radius: 10px;
+  padding: 8px;
+  margin: 8px;
+}
+</style>
